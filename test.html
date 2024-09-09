@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .img-zoom-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .img-zoom-container img {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .img-zoom-container img.active {
+            display: block;
+        }
+
+        /* Initial zoom scale */
+        .zoomed-in {
+            transform: scale(1.5);
+            /* Zoomed-in scale */
+        }
+
+        .zoomed-out {
+            transform: scale(1);
+            /* Default scale */
+        }
+
+        /* Carousel styling */
+        .carousel-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .carousel-container img {
+            width: 100%;
+            height: auto;
+            display: none;
+        }
+
+        .carousel-container img.active {
+            display: block;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-controls button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* Zoom buttons for mobile */
+        .zoom-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .zoom-controls button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        // Carousel functionality
+        let currentIndex = 0;
+        let scale = 1; // Track the zoom level
+        const maxScale = 2.5; // Maximum zoom-in level
+        const minScale = 1;   // Minimum zoom-out level
+
+        function showSlide(index) {
+            const images = document.querySelectorAll('.carousel-container img');
+            images.forEach((img, i) => {
+                img.classList.remove('active');
+                if (i === index) {
+                    img.classList.add('active');
+                    img.style.transform = `scale(${scale})`; // Apply the current scale to the active image
+                }
+            });
+        }
+
+        function nextSlide() {
+            const images = document.querySelectorAll('.carousel-container img');
+            currentIndex = (currentIndex + 1) % images.length;
+            showSlide(currentIndex);
+        }
+
+        function prevSlide() {
+            const images = document.querySelectorAll('.carousel-container img');
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showSlide(currentIndex);
+        }
+
+        // Zoom-in function
+        function zoomIn() {
+            const activeImage = document.querySelector('.carousel-container img.active');
+            if (scale < maxScale) {
+                scale += 0.5;
+                activeImage.style.transform = `scale(${scale})`;
+            }
+        }
+
+        // Zoom-out function
+        function zoomOut() {
+            const activeImage = document.querySelector('.carousel-container img.active');
+            if (scale > minScale) {
+                scale -= 0.5;
+                activeImage.style.transform = `scale(${scale})`;
+            }
+        }
+
+        // Reset zoom function
+        function resetZoom() {
+            scale = 1; // Reset scale to the original size
+            const activeImage = document.querySelector('.carousel-container img.active');
+            activeImage.style.transform = `scale(${scale})`;
+        }
+
+        window.onload = function () {
+            showSlide(currentIndex);
+        };
+    </script>
+</head>
+
+<body>
+
+    <h1>Carousel Image Zoom (Mobile)</h1>
+
+    <div class="img-zoom-container carousel-container">
+        <img id="myimage1" src="aha.jpg" width="300" height="240" class="active">
+        <img id="myimage2" src="flower.jpg" width="300" height="240">
+        <img id="myimage3" src="hammar.jpg" width="300" height="240">
+
+        <div class="carousel-controls">
+            <button onclick="prevSlide()">&#10094;</button>
+            <button onclick="nextSlide()">&#10095;</button>
+        </div>
+    </div>
+
+    <!-- Zoom Controls for Mobile -->
+    <div class="zoom-controls">
+        <button onclick="zoomIn()">+</button>
+        <button onclick="zoomOut()">-</button>
+        <!-- New Reset Button -->
+        <button onclick="resetZoom()">Reset</button>
+    </div>
+
+</body>
+
+</html>
